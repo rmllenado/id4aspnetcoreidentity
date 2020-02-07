@@ -213,10 +213,139 @@ namespace IdentityServer
             return View();
         }
 
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+                    var resetUrl = Url.Action("ResetPassword", "Account", new { token = token, email = user.Email }, Request.Scheme);
+                    System.IO.File.WriteAllText("resetlink.txt", resetUrl);
+                }
+                else
+                {
+                    // email user and inform them that they do not have an account
+                }
+                return View("Success", BuildSuccessViewModel("Please check your email to reset your password", autoRedirect: false));
+            }
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            return View(new ResetPasswordViewModel { Token = token, Email = email }); ;
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user != null)
+                {
+                    var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+                    if (!result.Succeeded)
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError("", error.Description);
+                        }
+                        return View();
+                    }
+                    return View("Success", BuildSuccessViewModel("Password changed.", autoRedirect: true));
+                }
+                ModelState.AddModelError("", "Invalid Request");
+            }
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByNameAsync(model.UserName) ?? await _userManager.FindByEmailAsync(model.Email);
+
+                if (user != null)
+                {
+                    // Send an email to user
+                    // You're already registered. If you forgot your password, please use the forgot password using your registered email to reset your password to regain access.
+                    // You can also call Customer Service for assistance.
+                }
+
+                if (user == null)
+                {
+                    user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
+
+                    var result = await _userManager.CreateAsync(user, model.Password);
+
+                    if (result.Succeeded)
+                    {
+                        var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        var confirmEmailUrl = Url.Action("ConfirmEmail", "Account", new { token = token, email = user.Email }, Request.Scheme);
+                        System.IO.File.WriteAllText("confirmEmailLink.txt", confirmEmailUrl);
+                    }
+                }
+
+                // We always return success to prevent account enumeration attacks
+                return View("Success", BuildSuccessViewModel("Registered.", autoRedirect: false));
+            }
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string token, string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+
+            if (user != null)
+            {
+                var result = await _userManager.ConfirmEmailAsync(user, token);
+
+                if (result.Succeeded)
+                {
+                    return View("Success", BuildSuccessViewModel("Thank you for confirming your email.", autoRedirect: false));
+                }
+            }
+
+            return View("Error");
+        }
 
         /*****************************************/
         /* helper APIs for the AccountController */
         /*****************************************/
+        private SuccessViewModel BuildSuccessViewModel(string message, string redirectUrl = "Login", bool autoRedirect = false)
+        {
+            var vm = new SuccessViewModel
+            {
+                Message = message,
+                RedirectUri = redirectUrl,
+                AutoRedirect = autoRedirect
+            };
+
+            return vm;
+        }
+
         private async Task<LoginViewModel> BuildLoginViewModelAsync(string returnUrl)
         {
             var context = await _interaction.GetAuthorizationContextAsync(returnUrl);

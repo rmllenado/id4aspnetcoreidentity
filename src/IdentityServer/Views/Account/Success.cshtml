@@ -1,0 +1,24 @@
+﻿@model SuccessViewModel
+
+<div class="page-header logged-out">
+    <h1>
+        Success
+        <small>@Model.Message</small>
+    </h1>
+
+    @if (Model.RedirectUri != null)
+    {
+        <div>
+            Redirecting you to Login. 
+            Click <a class="RedirectUri" href="@Model.RedirectUri">here</a> if it doesn't.
+        </div>
+    }
+</div>
+
+@section scripts
+{
+    @if (Model.AutoRedirect)
+    {
+        <script src="~/js/signout-redirect.js"></script>
+    }
+}
