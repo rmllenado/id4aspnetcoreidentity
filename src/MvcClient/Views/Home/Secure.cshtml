@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "Secure Page";
+}
+
+@using Microsoft.AspNetCore.Authentication
+
+<h2>Claims</h2>
+
+@if (User == null || User.Claims == null || User.Claims.Count() == 0)
+{
+    <span>No claims</span>
+}
+else
+{
+    <dl>
+        @foreach (var claim in User.Claims)
+        {
+            <dt>@claim.Type</dt>
+            <dd>@claim.Value</dd>
+        }
+    </dl>
+}
+
+<h2>Properties</h2>
+
+@{
+    var x = await Context.AuthenticateAsync();
+    if (x == null || x.Properties == null || !x.Properties.Items.Any())
+    {
+        <span>No properties</span>
+    }
+    else
+    {
+        <dl>
+            @foreach (var prop in x.Properties.Items)
+            {
+                <dt>@prop.Key</dt>
+                <dd>@prop.Value</dd>
+            }
+        </dl>
+    }
+}

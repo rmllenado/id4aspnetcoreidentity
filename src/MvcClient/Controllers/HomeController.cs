@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MvcClient.Models;
@@ -21,12 +22,18 @@ namespace MvcClient.Controllers
         {
             _logger = logger;
         }
-
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();
         }
 
+        public IActionResult Secure()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
         public IActionResult Privacy()
         {
             return View();
@@ -50,6 +57,7 @@ namespace MvcClient.Controllers
             return View();
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> WeatherForecast()
         {
             var client = new HttpClient();
