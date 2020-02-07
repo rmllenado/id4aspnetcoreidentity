@@ -1,0 +1,5 @@
+﻿Add-Migration InitialIdentityDbMigration -c IdentityDbContext -o Data/Migrations/AspNetIdentity/AspNetIdentityDb
+
+Add-Migration SeedIdentityDbMigration -c IdentityDbContext -o Data/Migrations/AspNetIdentity/AspNetIdentityDb
+
+Update-Database -Context IdentityDbContext
