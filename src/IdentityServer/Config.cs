@@ -46,6 +46,27 @@ namespace IdentityServer
                     },
                     AllowOfflineAccess = true,
                 }
+                ,new Client
+                {
+                    ClientName = "Android Client",
+                    ClientId = "native.hybrid",
+                    ClientSecrets = { new Secret("secret".ToSha256()) },
+                    AllowedGrantTypes = GrantTypes.Code,
+                    RequireConsent = false,
+                    //RequireClientSecret = true,
+                    RequirePkce = true,
+                    RefreshTokenUsage = TokenUsage.ReUse,
+                    //RedirectUris =  { "http://localhost:5002/signin-oidc" },
+                    //PostLogoutRedirectUris = { "http://localhost:5002/signout-callback-oidc" },
+                    AllowedScopes = new List<string>()
+                    {
+                        IdentityServerConstants.StandardScopes.Profile,
+                        IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Email,
+                        "web_api"
+                    },
+                    AllowOfflineAccess = true,
+                }
             };
         
     }

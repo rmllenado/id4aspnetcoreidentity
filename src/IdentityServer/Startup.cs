@@ -105,6 +105,8 @@ namespace IdentityServer
                 app.UseDeveloperExceptionPage();
             }
 
+            //app.UseHttpsRedirection();
+
             // uncomment if you want to add MVC
             app.UseStaticFiles();
             app.UseRouting();
