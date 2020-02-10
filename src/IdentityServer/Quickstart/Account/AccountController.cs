@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace IdentityServer
@@ -143,6 +144,37 @@ namespace IdentityServer
                         throw new Exception("invalid return URL");
                     }
                 }
+                else if (result.RequiresTwoFactor)
+                {
+                    var user = await _userManager.FindByNameAsync(model.Username);
+                    var validProviders = await _userManager.GetValidTwoFactorProvidersAsync(user);
+                    var emailProvider = validProviders.SingleOrDefault(p => p.Contains("email", StringComparison.InvariantCultureIgnoreCase));
+                    if (emailProvider != null)
+                    {
+                        var token = await _userManager.GenerateTwoFactorTokenAsync(user, emailProvider);
+                        System.IO.File.WriteAllText("2svToken.txt", token);
+                        await HttpContext.SignInAsync(IdentityConstants.TwoFactorUserIdScheme, Store2FA(user.UserName, "Email"));
+
+                        if (context != null || Url.IsLocalUrl(model.ReturnUrl))
+                        {
+                            return RedirectToAction("TwoFactor", new { returnUrl = model.ReturnUrl });
+                        }
+                        else
+                        {
+                            return RedirectToAction("TwoFactor", new { returnUrl = "~/" });
+                        }
+                    }
+
+                    //var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+                    //if (context != null || Url.IsLocalUrl(model.ReturnUrl))
+                    //{
+                    //    return RedirectToAction("TwoFactor", new { returnUrl = model.ReturnUrl });
+                    //}
+                    //else
+                    //{
+                    //    return RedirectToAction("TwoFactor", new { returnUrl = "~/" });
+                    //}
+                }
 
                 await _events.RaiseAsync(new UserLoginFailureEvent(model.Username, "invalid credentials"));
                 ModelState.AddModelError(string.Empty, AccountOptions.InvalidCredentialsErrorMessage);
@@ -153,6 +185,86 @@ namespace IdentityServer
             return View(vm);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> TwoFactor(string returnUrl)
+        {
+            //var user = await _signInManager.GetTwoFactorAuthenticationUserAsync();
+            //if (user == null)
+            //{
+
+            //}
+
+            //var validProviders = await _userManager.GetValidTwoFactorProvidersAsync(user);
+            //var emailProvider = validProviders.SingleOrDefault(p => p.Contains("email", StringComparison.InvariantCultureIgnoreCase));
+            //if (emailProvider != null)
+            //{
+            //    var token = await _userManager.GenerateTwoFactorTokenAsync(user, emailProvider);
+            //    System.IO.File.WriteAllText("2svToken.txt", token);
+            //    await HttpContext.SignInAsync(IdentityConstants.TwoFactorUserIdScheme, Store2FA(user.Id, "Email"));
+            //}
+
+            return View(new TwoFactorViewModel { ReturnUrl = returnUrl });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TwoFactor(TwoFactorViewModel model)
+        {
+            var result = await HttpContext.AuthenticateAsync(IdentityConstants.TwoFactorUserIdScheme);
+
+            if (!result.Succeeded)
+            {
+                ModelState.AddModelError("", "Your login request has expired. Please start over.");
+                return View();
+            }
+
+            if (ModelState.IsValid)
+            {
+                //var user = await _userManager.FindByIdAsync(result.Principal.FindFirstValue("sub"));
+                var user = await _userManager.FindByNameAsync(result.Principal.FindFirstValue("sub"));
+
+                if (user != null)
+                {
+                    var provider = result.Principal.FindFirstValue("amr");
+
+                    //var signInResult = await _signInManager.TwoFactorSignInAsync(provider, model.Token, isPersistent: false, rememberClient: false);
+
+                    //if (signInResult.Succeeded)
+                    //{
+                    //    //await HttpContext.SignOutAsync(IdentityConstants.TwoFactorUserIdScheme);
+                    //    return LocalRedirect(model.ReturnUrl);
+                    //}
+
+                    //if (signInResult.IsLockedOut)
+                    //{
+                    //    ModelState.AddModelError("", "Account is locked.");
+                    //}
+                    //else
+                    //{
+                    //    ModelState.AddModelError("", "Invalid token");
+                    //}
+
+                    if (await _userManager.IsLockedOutAsync(user))
+                    {
+                        ModelState.AddModelError("", "Account is locked.");
+                        return View();
+                    }
+
+                    if (await _userManager.VerifyTwoFactorTokenAsync(user, provider, model.Token))
+                    {
+                        //await HttpContext.SignOutAsync(IdentityConstants.TwoFactorUserIdScheme);
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        //await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme);
+                        return LocalRedirect(model.ReturnUrl);
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "Invalid token");
+                    }
+                }
+            }
+            return View();
+        }
 
         /// <summary>
         /// Show logout page
@@ -304,6 +416,15 @@ namespace IdentityServer
                         var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                         var confirmEmailUrl = Url.Action("ConfirmEmail", "Account", new { token = token, email = user.Email }, Request.Scheme);
                         System.IO.File.WriteAllText("confirmEmailLink.txt", confirmEmailUrl);
+
+                    }
+                    else if (result.Errors.Any(e => e.Description.Contains("password", StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        foreach (var e in result.Errors)
+                        {
+                            ModelState.AddModelError("", e.Description);
+                        }
+                        return View();
                     }
                 }
 
@@ -466,6 +587,16 @@ namespace IdentityServer
             }
 
             return vm;
+        }
+
+        private ClaimsPrincipal Store2FA(string email, string v)
+        {
+            var identity = new ClaimsIdentity(new Claim[]
+            {
+                new Claim("sub", email)
+                ,new Claim("amr", v)
+            }, IdentityConstants.TwoFactorUserIdScheme);
+            return new ClaimsPrincipal(identity);
         }
     }
 }

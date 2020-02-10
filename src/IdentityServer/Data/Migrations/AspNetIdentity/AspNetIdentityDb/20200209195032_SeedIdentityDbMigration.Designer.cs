@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IdentityServer.Data.Migrations.AspNetIdentity.AspNetIdentityDb
 {
     [DbContext(typeof(IdentityDbContext))]
-    [Migration("20200207050947_SeedIdentityDbMigration")]
+    [Migration("20200209195032_SeedIdentityDbMigration")]
     partial class SeedIdentityDbMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -90,15 +90,15 @@ namespace IdentityServer.Data.Migrations.AspNetIdentity.AspNetIdentityDb
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "92ecbf32-eba6-48cd-8ac7-96f1f9f2a52b",
+                            ConcurrencyStamp = "dbd76924-0204-4fc3-a620-7ab53e596183",
                             Email = "AliceSmith@email.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ALICESMITH@EMAIL.COM",
                             NormalizedUserName = "ALICE",
-                            PasswordHash = "AQAAAAEAACcQAAAAEO7un27KBS7o4Wekd+9WBMIM15UUK86QKT4YNQ4muoRmi8NjSeogp8AOF5xWMETIBw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEJs+pQMABcI/hPQesEc8B5td8VPdfpplqoKIyh6BgWFIvo667I6K+0x/CZl0If7ixQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f7604b48-a274-428b-ab51-5ddaa1e1f148",
+                            SecurityStamp = "2a8834d1-1786-4ce8-b261-bcd0958391b4",
                             TwoFactorEnabled = false,
                             UserName = "alice"
                         },
@@ -106,17 +106,33 @@ namespace IdentityServer.Data.Migrations.AspNetIdentity.AspNetIdentityDb
                         {
                             Id = "2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "01797329-c930-4367-840c-0828fe6382f1",
+                            ConcurrencyStamp = "2d44995f-9a87-435e-acad-6cb3a7faee4c",
                             Email = "BobSmith@email.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "BOBSMITH@EMAIL.COM",
                             NormalizedUserName = "BOB",
-                            PasswordHash = "AQAAAAEAACcQAAAAEIEN1PuiG6Q9kP9zSiHHZJNMm+BX/3MT5udiprs2B5Cegf/X1FEf08V4nfL8kB600w==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEFKx7fyVIow+Mbx1u1MRSapETW+CkZWnjjVSaBMYQSlUdOjmRYul3kKqBWSGOf/FGQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "56cfb3c6-d9dc-46ab-a5a3-5836e1631a82",
+                            SecurityStamp = "04b8c1b8-e8ee-457d-b728-41812f1f3340",
                             TwoFactorEnabled = false,
                             UserName = "bob"
+                        },
+                        new
+                        {
+                            Id = "3",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "ff1e58a7-2634-4c44-9303-b22772520898",
+                            Email = "rmllenado@yahoo.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "RMLLENADO@YAHOO.COM",
+                            NormalizedUserName = "MON",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAwU+HlIT/cQGAvra7y1zvG55JfK3wA67GfPVsY8r7LPKLw1EgMQnm8tgs/WBY1Kww==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "7e88f5ba-9c7f-4660-aaff-6aba742f3137",
+                            TwoFactorEnabled = true,
+                            UserName = "mon"
                         });
                 });
 
@@ -299,6 +315,55 @@ namespace IdentityServer.Data.Migrations.AspNetIdentity.AspNetIdentityDb
                             ClaimType = "location",
                             ClaimValue = "somewhere",
                             UserId = "1"
+                        },
+                        new
+                        {
+                            Id = 16,
+                            ClaimType = "name",
+                            ClaimValue = "Mon Mon",
+                            UserId = "3"
+                        },
+                        new
+                        {
+                            Id = 17,
+                            ClaimType = "given_name",
+                            ClaimValue = "Mon",
+                            UserId = "3"
+                        },
+                        new
+                        {
+                            Id = 18,
+                            ClaimType = "family_name",
+                            ClaimValue = "Mon",
+                            UserId = "3"
+                        },
+                        new
+                        {
+                            Id = 19,
+                            ClaimType = "email",
+                            ClaimValue = "rmllenado@yahoo.com",
+                            UserId = "3"
+                        },
+                        new
+                        {
+                            Id = 20,
+                            ClaimType = "website",
+                            ClaimValue = "http://mon.com",
+                            UserId = "3"
+                        },
+                        new
+                        {
+                            Id = 21,
+                            ClaimType = "address",
+                            ClaimValue = "{ 'street_address': 'Dehaven Drive', 'city': 'Yonkers', 'zip_code': 10703, 'state': 'NY', 'country': 'USA' }",
+                            UserId = "3"
+                        },
+                        new
+                        {
+                            Id = 22,
+                            ClaimType = "location",
+                            ClaimValue = "somewhere",
+                            UserId = "3"
                         });
                 });
 

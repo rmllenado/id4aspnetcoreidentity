@@ -40,6 +40,7 @@ namespace IdentityServer.Data
             };
             alice.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(alice, "alice");
 
+            
             var bob = new ApplicationUser
             {
                 Id = "2",
@@ -51,8 +52,21 @@ namespace IdentityServer.Data
             };
             bob.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(bob, "bob");
 
+            var mon = new ApplicationUser
+            {
+                Id = "3",
+                UserName = "mon",
+                NormalizedUserName = "MON",
+                Email = "rmllenado@yahoo.com",
+                NormalizedEmail = "rmllenado@yahoo.com".ToUpper(),
+                EmailConfirmed = true,
+                TwoFactorEnabled = true
+            };
+            mon.PasswordHash = new PasswordHasher<ApplicationUser>().HashPassword(mon, "mon");
+
+
             builder.Entity<ApplicationUser>()
-                .HasData(alice, bob);
+                .HasData(alice, bob, mon);
 
 
             builder.Entity<IdentityUserClaim<string>>()
@@ -159,6 +173,55 @@ namespace IdentityServer.Data
                     {
                         Id = 15,
                         UserId = "1",
+                        ClaimType = "location",
+                        ClaimValue = "somewhere"
+                    },
+                    new IdentityUserClaim<string>
+                    {
+                        Id = 16,
+                        UserId = "3",
+                        ClaimType = "name",
+                        ClaimValue = "Mon Mon"
+                    },
+                    new IdentityUserClaim<string>
+                    {
+                        Id = 17,
+                        UserId = "3",
+                        ClaimType = "given_name",
+                        ClaimValue = "Mon"
+                    },
+                    new IdentityUserClaim<string>
+                    {
+                        Id = 18,
+                        UserId = "3",
+                        ClaimType = "family_name",
+                        ClaimValue = "Mon"
+                    },
+                    new IdentityUserClaim<string>
+                    {
+                        Id = 19,
+                        UserId = "3",
+                        ClaimType = "email",
+                        ClaimValue = "rmllenado@yahoo.com"
+                    },
+                    new IdentityUserClaim<string>
+                    {
+                        Id = 20,
+                        UserId = "3",
+                        ClaimType = "website",
+                        ClaimValue = "http://mon.com"
+                    },
+                    new IdentityUserClaim<string>
+                    {
+                        Id = 21,
+                        UserId = "3",
+                        ClaimType = "address",
+                        ClaimValue = @"{ 'street_address': 'Dehaven Drive', 'city': 'Yonkers', 'zip_code': 10703, 'state': 'NY', 'country': 'USA' }"
+                    },
+                    new IdentityUserClaim<string>
+                    {
+                        Id = 22,
+                        UserId = "3",
                         ClaimType = "location",
                         ClaimValue = "somewhere"
                     });

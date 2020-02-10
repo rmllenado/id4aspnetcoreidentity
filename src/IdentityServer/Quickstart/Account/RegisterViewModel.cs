@@ -21,9 +21,9 @@ namespace IdentityServer
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
+        [Compare("Password")]
         [DataType(DataType.Password)]
         [Display(Name = "Confirm password")]
-        [Compare("Password")]
         public string ConfirmPassword { get; set; }
     }
 }
