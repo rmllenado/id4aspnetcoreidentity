@@ -54,16 +54,11 @@ namespace IdentityServer
                 {
                     ClientName = "Native Client (Hybrid with PKCE)",
                     ClientId = "native.hybrid",
-<<<<<<< HEAD
 
                     RedirectUris =  { "https://notused" },
                     PostLogoutRedirectUris = { "https://notused" },
 
                     RequireClientSecret = false,
-=======
-                    ClientSecrets = { new Secret("secret".ToSha256()) },
-                    AllowedGrantTypes = GrantTypes.Hybrid,
->>>>>>> dd98616d48688e53011d97f05c3dbf9136918ced
                     RequireConsent = false,
                     
                     AllowedGrantTypes = GrantTypes.Code,
@@ -73,22 +68,13 @@ namespace IdentityServer
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Email,
-<<<<<<< HEAD
                         "api"
-=======
-                        IdentityServerConstants.StandardScopes.OfflineAccess,
-                        "web_api"
->>>>>>> dd98616d48688e53011d97f05c3dbf9136918ced
                     },
 
                     AllowOfflineAccess = true,
-<<<<<<< HEAD
 
                     RefreshTokenUsage = TokenUsage.ReUse,
 
-=======
-                    AllowAccessTokensViaBrowser = true
->>>>>>> dd98616d48688e53011d97f05c3dbf9136918ced
                 }
                 ,// machine to machine client
                 new Client
