@@ -51,7 +51,7 @@ namespace IdentityServer
                     ClientName = "Android Client",
                     ClientId = "native.hybrid",
                     ClientSecrets = { new Secret("secret".ToSha256()) },
-                    AllowedGrantTypes = GrantTypes.Code,
+                    AllowedGrantTypes = GrantTypes.Hybrid,
                     RequireConsent = false,
                     //RequireClientSecret = true,
                     RequirePkce = true,
@@ -63,9 +63,11 @@ namespace IdentityServer
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Email,
+                        IdentityServerConstants.StandardScopes.OfflineAccess,
                         "web_api"
                     },
                     AllowOfflineAccess = true,
+                    AllowAccessTokensViaBrowser = true
                 }
                 ,// machine to machine client
                 new Client
