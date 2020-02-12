@@ -29,7 +29,7 @@ namespace Client
                 ClientId = "client",
                 ClientSecret = "secret",
 
-                Scope = "web_api"
+                Scope = "api"
             });
 
             if (tokenResponse.IsError)

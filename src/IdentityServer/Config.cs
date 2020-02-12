@@ -15,13 +15,17 @@ namespace IdentityServer
             new IdentityResource[]
             { 
                 new IdentityResources.OpenId(),
-                new IdentityResources.Profile()
+                new IdentityResources.Profile(),
+                new IdentityResources.Email(),
             };
 
         public static IEnumerable<ApiResource> Apis =>
-            new ApiResource[] 
-            { 
-                new ApiResource("web_api", "My Web API")
+            new ApiResource[]
+            {
+                new ApiResource("api", "Demo API")
+                {
+                    ApiSecrets = { new Secret("secret".Sha256()) }
+                }
             };
         
         public static IEnumerable<Client> Clients =>
@@ -36,36 +40,41 @@ namespace IdentityServer
                     RequireConsent = false,
                     RequireClientSecret = true,
                     RequirePkce = true,
-                    RedirectUris =  { "http://localhost:5002/signin-oidc" },
-                    PostLogoutRedirectUris = { "http://localhost:5002/signout-callback-oidc" },
+                    RedirectUris =  { "https://localhost:5002/signin-oidc" },
+                    PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
                     AllowedScopes = new List<string>()
                     {
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.OpenId,
-                        "web_api"
+                        "api"
                     },
                     AllowOfflineAccess = true,
                 }
                 ,new Client
                 {
-                    ClientName = "Android Client",
+                    ClientName = "Native Client (Hybrid with PKCE)",
                     ClientId = "native.hybrid",
-                    ClientSecrets = { new Secret("secret".ToSha256()) },
-                    AllowedGrantTypes = GrantTypes.Code,
+
+                    RedirectUris =  { "https://notused" },
+                    PostLogoutRedirectUris = { "https://notused" },
+
+                    RequireClientSecret = false,
                     RequireConsent = false,
-                    //RequireClientSecret = true,
+                    
+                    AllowedGrantTypes = GrantTypes.Code,
                     RequirePkce = true,
-                    RefreshTokenUsage = TokenUsage.ReUse,
-                    //RedirectUris =  { "http://localhost:5002/signin-oidc" },
-                    //PostLogoutRedirectUris = { "http://localhost:5002/signout-callback-oidc" },
                     AllowedScopes = new List<string>()
                     {
                         IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.OpenId,
                         IdentityServerConstants.StandardScopes.Email,
-                        "web_api"
+                        "api"
                     },
+
                     AllowOfflineAccess = true,
+
+                    RefreshTokenUsage = TokenUsage.ReUse,
+
                 }
                 ,// machine to machine client
                 new Client
@@ -76,7 +85,7 @@ namespace IdentityServer
 
                     AllowedGrantTypes = GrantTypes.ClientCredentials,
                     // scopes that client has access to
-                    AllowedScopes = { "web_api" }
+                    AllowedScopes = { "api" }
                 },
             };
         

@@ -53,6 +53,17 @@ namespace IdentityServer
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder
+                    //start-xamarin android dev setup
+                        .ConfigureKestrel(options =>
+                        {
+                            options.ListenAnyIP(5001, listenOptions =>
+                            {
+                                listenOptions.UseHttps("kestrel.pfx", "changeit");
+                            });
+                            options.ListenAnyIP(5000);
+                        });
+                    //end-xamarin android dev setup
                     webBuilder.UseStartup<Startup>();
                     webBuilder.UseSerilog();
                 });
