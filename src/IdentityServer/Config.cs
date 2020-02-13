@@ -40,8 +40,8 @@ namespace IdentityServer
                     RequireConsent = false,
                     RequireClientSecret = true,
                     RequirePkce = true,
-                    RedirectUris =  { "https://localhost:5002/signin-oidc" },
-                    PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
+                    RedirectUris =  { "http://localhost:5002/signin-oidc" },
+                    PostLogoutRedirectUris = { "http://localhost:5002/signout-callback-oidc" },
                     AllowedScopes = new List<string>()
                     {
                         IdentityServerConstants.StandardScopes.Profile,
