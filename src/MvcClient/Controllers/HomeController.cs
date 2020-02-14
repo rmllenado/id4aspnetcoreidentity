@@ -51,7 +51,7 @@ namespace MvcClient.Controllers
 
             var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
-            var content = await client.GetStringAsync("http://localhost:5001/identity");
+            var content = await client.GetStringAsync("https://localhost:5001/identity");
 
             ViewBag.Json = JArray.Parse(content).ToString();
             return View();
@@ -61,7 +61,7 @@ namespace MvcClient.Controllers
         public async Task<IActionResult> WeatherForecast()
         {
             var client = new HttpClient();
-            var content = await client.GetStringAsync("http://localhost:5001/weatherforecast");
+            var content = await client.GetStringAsync("https://localhost:5001/weatherforecast");
 
             ViewBag.Json = JArray.Parse(content).ToString();
             return View();

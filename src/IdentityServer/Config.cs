@@ -40,8 +40,8 @@ namespace IdentityServer
                     RequireConsent = false,
                     RequireClientSecret = true,
                     RequirePkce = true,
-                    RedirectUris =  { "http://localhost:5002/signin-oidc" },
-                    PostLogoutRedirectUris = { "http://localhost:5002/signout-callback-oidc" },
+                    RedirectUris =  { "https://localhost:5002/signin-oidc" },
+                    PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
                     AllowedScopes = new List<string>()
                     {
                         IdentityServerConstants.StandardScopes.Profile,
@@ -61,12 +61,12 @@ namespace IdentityServer
                     RequireClientSecret = false,
                     RequireConsent = false,
                     
-                    AllowedGrantTypes = GrantTypes.Code,
+                    AllowedGrantTypes = GrantTypes.Hybrid,
                     RequirePkce = true,
                     AllowedScopes = new List<string>()
                     {
-                        IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.OpenId,
+                        IdentityServerConstants.StandardScopes.Profile,
                         IdentityServerConstants.StandardScopes.Email,
                         "api"
                     },
