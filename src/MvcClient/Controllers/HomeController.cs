@@ -45,13 +45,25 @@ namespace MvcClient.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
             
-        public async Task<IActionResult> SecureApiCall()
+        public async Task<IActionResult> SecureApiCallIdentity()
         {
             var accessToken = await HttpContext.GetTokenAsync("access_token");
 
             var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             var content = await client.GetStringAsync("https://localhost:5001/identity");
+
+            ViewBag.Json = JArray.Parse(content).ToString();
+            return View();
+        }
+
+        public async Task<IActionResult> SecureApiCallApiTest()
+        {
+            var accessToken = await HttpContext.GetTokenAsync("access_token");
+
+            var client = new HttpClient();
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            var content = await client.GetStringAsync("https://localhost:5001/api/test");
 
             ViewBag.Json = JArray.Parse(content).ToString();
             return View();

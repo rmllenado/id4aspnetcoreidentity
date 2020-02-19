@@ -55,8 +55,10 @@ namespace IdentityServer
                     ClientName = "Native Client (Hybrid with PKCE)",
                     ClientId = "native.hybrid",
 
-                    RedirectUris =  { "https://notused" },
-                    PostLogoutRedirectUris = { "https://notused" },
+                    RedirectUris = { "xamarinformsclients://callback" },
+                    PostLogoutRedirectUris = {"xamarinformsclients://callback"},
+                    //RedirectUris =  { "https://notused" },
+                    //PostLogoutRedirectUris = { "https://notused" },
 
                     RequireClientSecret = false,
                     RequireConsent = false,
